@@ -27,78 +27,36 @@ namespace Notes
             button2.BackColor = Color.FromArgb(41, 41, 50);
             currentFileName = null;
         }
-              
+
         private void SaveFile()
         {
-            if (!string.IsNullOrEmpty(textArea.Text))
+            saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text File(*.txt) | *.txt";
+            saveFileDialog.FileName = "Untitled";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Text File(*.txt) | *.txt";
-                saveFileDialog.FileName = "Untitled";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    currentFileName = saveFileDialog.FileName;
-                    
-                    File.WriteAllText(saveFileDialog.FileName, textArea.Text);
-                    Text = currentFileName;
-                    saved = true;
-                    button2.BackColor = Color.FromArgb(41, 41, 50);
-                }
-            }
-            else
-            {
-                var result = warningBox.TextForm("Notes", "Hmm... there's nothing to save.", MessageBoxButtons.OKCancel, "Oof...", "Fine");
-                if (result == DialogResult.OK)
-                    NewFile();
-            }
-        }
-
-        private void OpenFile()
-        {
-            openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                NewFile();
-                currentFileName = openFileDialog.FileName;
-                textArea.Text = File.ReadAllText(openFileDialog.FileName);
+                currentFileName = saveFileDialog.FileName;
+                File.WriteAllText(saveFileDialog.FileName, textArea.Text);
                 Text = currentFileName;
-                saved = true;
-                button2.BackColor = Color.FromArgb(41,41,50);
-
-                checkNumberOfTotalLines();
-                checkNumberOfWords();
-                checkNumberOfLettersWithSpaces();
-                checkNumberOfLetters();
+                button2.BackColor = Color.FromArgb(41, 41, 50);
             }
         }
-
         private void ExitFile()
         {
-            if (!string.IsNullOrEmpty(textArea.Text) && !saved)
+            if (saved) return;
+
+            var result = warningBox.TextForm("Are you sure?", $"Save changes before exiting", MessageBoxButtons.OKCancel, "Save", "Don't Save");
+            if (result == DialogResult.OK)
             {
-                var result = warningBox.TextForm("Are you sure?", $"Save changes before exiting", MessageBoxButtons.OKCancel, "Save", "Don't Save");
-                if (result == DialogResult.OK)
+                if (File.Exists(currentFileName))
                 {
-                    if (File.Exists(currentFileName))
-                    {
-                        textArea.SaveFile(currentFileName, RichTextBoxStreamType.PlainText);
-                        button2.BackColor = Color.FromArgb(41, 41, 50);
-                    }
-                    else
-                        SaveFile();
+                    textArea.SaveFile(currentFileName, RichTextBoxStreamType.PlainText);
+                    button2.BackColor = Color.FromArgb(41, 41, 50);
                 }
                 else
-                {
-                    warningBox.Close();
-                    //this.Close();
-                }
+                    SaveFile();
             }
-            
-
-
         }
-
         private void newTool_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(textArea.Text))
@@ -120,6 +78,7 @@ namespace Notes
 
         private void saveTool_Click(object sender, EventArgs e)
         {
+            saved = true;
             if (!File.Exists(currentFileName))
             {
                 SaveFile();
@@ -134,18 +93,62 @@ namespace Notes
 
         private void saveAsTool_Click(object sender, EventArgs e)
         {
+            saved = true;
             SaveFile();
+        }
+
+        private void OpenFile()
+        {
+            openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                NewFile();
+                currentFileName = openFileDialog.FileName;
+                textArea.Text = File.ReadAllText(openFileDialog.FileName);
+                Text = currentFileName;
+                saved = true;
+                button2.BackColor = Color.FromArgb(41, 41, 50);
+
+                ShowFileDetails();
+            }
+        }
+
+        public void OpenFileArgs(string filePath)
+        {
+            string file = File.ReadAllText(filePath);
+            textArea.Text = file;
+            currentFileName = filePath;
+            Text = currentFileName;
+            saved = true;
+            
+            ShowFileDetails();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Text = "Untitled*";
+            if (File.Exists(currentFileName))
+            {
+                Text = currentFileName;
+                button2.BackColor = Color.FromArgb(41, 41, 50);
+            }
+            else
+            {
+                Text = "Untitled*";
+                button2.BackColor = Color.Green;
+            }
         }
 
         private void textArea_TextChanged(object sender, EventArgs e)
         {
             button2.BackColor = Color.Green;
-            Text = currentFileName + "*";
+            if (File.Exists(currentFileName))
+            {
+                Text = currentFileName + "*";
+            }
+            else
+                Text = "Untitled*";
+
             saved = false;
         }
 
@@ -170,6 +173,7 @@ namespace Notes
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            saved = true;
             if (!File.Exists(currentFileName))
             {
                 SaveFile();
@@ -191,61 +195,44 @@ namespace Notes
             }
         }
 
-        private void fontDialog1_Apply(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-
-        public void OpenFileArgs(string filePath)
-        {
-            string file = File.ReadAllText(filePath);
-            textArea.Text = currentFileName;
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void textArea_SelectionChanged(object sender, EventArgs e)
         {
-            checkNumberOfTotalLines();
-            checkNumberOfWords();
-            checkNumberOfLettersWithSpaces();
-            checkNumberOfLetters();
+            ShowFileDetails();
         }
 
-        private void checkNumberOfTotalLines()
+        private void CheckNumberOfTotalLines()
         {
             int index = textArea.SelectionStart;
             int currentLine = textArea.GetLineFromCharIndex(index);
             label1.Text = "ln: " + currentLine.ToString();
         }
 
-        private void checkNumberOfWords()
+        private void CheckNumberOfWords()
         {
             int wordCount = Regex.Matches(textArea.Text, @"\b[A-Za-z0-9]+\b").Count;
             label3.Text = "words: " + wordCount.ToString();
             
         }
 
-        private void checkNumberOfLettersWithSpaces()
+        private void CheckNumberOfLettersWithSpaces()
         {
             
             int wordCount = textArea.Text.Length;
             label4.Text = "chars ws: "  + wordCount.ToString();
         }
 
-        private void checkNumberOfLetters()
+        private void CheckNumberOfLetters()
         {
             string wordCount = textArea.Text.Replace(" ", "");
             label5.Text = "chars: " + wordCount.Length;
+        }
+
+        private void ShowFileDetails()
+        {
+            CheckNumberOfTotalLines();
+            CheckNumberOfWords();
+            CheckNumberOfLettersWithSpaces();
+            CheckNumberOfLetters();
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -270,7 +257,7 @@ namespace Notes
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
-            checkNumberOfTotalLines();
+            ShowFileDetails();
         }
     }
 }

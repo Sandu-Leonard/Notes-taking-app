@@ -303,7 +303,6 @@
             this.fontDialog1.Color = System.Drawing.Color.DimGray;
             this.fontDialog1.Font = new System.Drawing.Font("Century Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.fontDialog1.ShowColor = true;
-            this.fontDialog1.Apply += new System.EventHandler(this.fontDialog1_Apply);
             // 
             // label4
             // 
