@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+
 namespace Notes
 {
     public partial class Form1 : Form
@@ -5,11 +9,13 @@ namespace Notes
         private OpenFileDialog openFileDialog;
         private SaveFileDialog saveFileDialog;
         private FontDialog fontDialog;
-        private String currentFileName;
+        private String? currentFileName;
         private bool saved;
-        private bool modified;
+        CustomMessageBox warningBox = new CustomMessageBox();
 
+#pragma warning disable CS8618 
         public Form1()
+#pragma warning restore CS8618
         {
             InitializeComponent();
         }
@@ -19,6 +25,7 @@ namespace Notes
             Text = "Untitled";
             saved = false;
             button2.BackColor = Color.FromArgb(41, 41, 50);
+            currentFileName = null;
         }
               
         private void SaveFile()
@@ -27,9 +34,11 @@ namespace Notes
             {
                 saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "Text File(*.txt) | *.txt";
+                saveFileDialog.FileName = "Untitled";
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     currentFileName = saveFileDialog.FileName;
+                    
                     File.WriteAllText(saveFileDialog.FileName, textArea.Text);
                     Text = currentFileName;
                     saved = true;
@@ -38,7 +47,9 @@ namespace Notes
             }
             else
             {
-                MessageBox.Show("There is nothing to save.");
+                var result = warningBox.TextForm("Notes", "Hmm... there's nothing to save.", MessageBoxButtons.OKCancel, "Oof...", "Fine");
+                if (result == DialogResult.OK)
+                    NewFile();
             }
         }
 
@@ -49,12 +60,43 @@ namespace Notes
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 NewFile();
-                currentFileName = openFileDialog.SafeFileName;
+                currentFileName = openFileDialog.FileName;
                 textArea.Text = File.ReadAllText(openFileDialog.FileName);
                 Text = currentFileName;
                 saved = true;
                 button2.BackColor = Color.FromArgb(41,41,50);
+
+                checkNumberOfTotalLines();
+                checkNumberOfWords();
+                checkNumberOfLettersWithSpaces();
+                checkNumberOfLetters();
             }
+        }
+
+        private void ExitFile()
+        {
+            if (!string.IsNullOrEmpty(textArea.Text) && !saved)
+            {
+                var result = warningBox.TextForm("Are you sure?", $"Save changes before exiting", MessageBoxButtons.OKCancel, "Save", "Don't Save");
+                if (result == DialogResult.OK)
+                {
+                    if (File.Exists(currentFileName))
+                    {
+                        textArea.SaveFile(currentFileName, RichTextBoxStreamType.PlainText);
+                        button2.BackColor = Color.FromArgb(41, 41, 50);
+                    }
+                    else
+                        SaveFile();
+                }
+                else
+                {
+                    warningBox.Close();
+                    //this.Close();
+                }
+            }
+            
+
+
         }
 
         private void newTool_Click(object sender, EventArgs e)
@@ -65,7 +107,7 @@ namespace Notes
             }
             else
             {
-                var result = MessageBox.Show("Your progress will be lost!", "Are you sure?", MessageBoxButtons.OKCancel);
+                var result = warningBox.TextForm("Progress will be lost.", "Make sure you save your progress!", MessageBoxButtons.OKCancel, "New", "Cancel");        
                 if (result == DialogResult.OK)
                     NewFile();
             }
@@ -78,14 +120,14 @@ namespace Notes
 
         private void saveTool_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textArea.Text) || !saved)
+            if (!File.Exists(currentFileName))
             {
                 SaveFile();
             }
             else
             {
                 textArea.SaveFile(currentFileName, RichTextBoxStreamType.PlainText);
-                button2.BackColor = Color.FromArgb(41,41,50);
+                button2.BackColor = Color.FromArgb(41, 41, 50);
                 Text = currentFileName;
             }
         }
@@ -93,19 +135,6 @@ namespace Notes
         private void saveAsTool_Click(object sender, EventArgs e)
         {
             SaveFile();
-        }
-
-        private void exitTool_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(textArea.Text) && !saved)
-            {
-                SaveFile();
-            }
-            else
-            {
-                Application.Exit();
-            }
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -116,9 +145,8 @@ namespace Notes
         private void textArea_TextChanged(object sender, EventArgs e)
         {
             button2.BackColor = Color.Green;
-
             Text = currentFileName + "*";
-
+            saved = false;
         }
 
         private void btnNew_Click(object sender, EventArgs e)
@@ -129,7 +157,7 @@ namespace Notes
             }
             else
             {
-                var result = MessageBox.Show("Your progress will be lost!", "Are you sure?", MessageBoxButtons.OKCancel);
+                var result = warningBox.TextForm("Progress will be lost.", "Make sure you save your progress!", MessageBoxButtons.OKCancel, "New", "Cancel");            
                 if (result == DialogResult.OK)
                     NewFile();
             }
@@ -142,7 +170,7 @@ namespace Notes
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textArea.Text) || !saved)
+            if (!File.Exists(currentFileName))
             {
                 SaveFile();
             }
@@ -153,29 +181,12 @@ namespace Notes
                 Text = currentFileName;
             }
         }
-
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(textArea.Text) && !saved)
-            {
-                var result = MessageBox.Show($"Do you want to save changes to {currentFileName}", "Are you sure?", MessageBoxButtons.OKCancel);
-                if (result == DialogResult.OK)
-                {
-                    SaveFile();
-                }
-
-            }
-            else
-            {
-                Application.Exit();
-            }
-        }
-
         private void fontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             fontDialog = new FontDialog();
             if (fontDialog.ShowDialog() == DialogResult.OK)
             {
+                fontDialog.Color = Color.Green;
                 textArea.Font = fontDialog.Font;
             }
         }
@@ -183,6 +194,83 @@ namespace Notes
         private void fontDialog1_Apply(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+
+        public void OpenFileArgs(string filePath)
+        {
+            string file = File.ReadAllText(filePath);
+            textArea.Text = currentFileName;
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textArea_SelectionChanged(object sender, EventArgs e)
+        {
+            checkNumberOfTotalLines();
+            checkNumberOfWords();
+            checkNumberOfLettersWithSpaces();
+            checkNumberOfLetters();
+        }
+
+        private void checkNumberOfTotalLines()
+        {
+            int index = textArea.SelectionStart;
+            int currentLine = textArea.GetLineFromCharIndex(index);
+            label1.Text = "ln: " + currentLine.ToString();
+        }
+
+        private void checkNumberOfWords()
+        {
+            int wordCount = Regex.Matches(textArea.Text, @"\b[A-Za-z0-9]+\b").Count;
+            label3.Text = "words: " + wordCount.ToString();
+            
+        }
+
+        private void checkNumberOfLettersWithSpaces()
+        {
+            
+            int wordCount = textArea.Text.Length;
+            label4.Text = "chars ws: "  + wordCount.ToString();
+        }
+
+        private void checkNumberOfLetters()
+        {
+            string wordCount = textArea.Text.Replace(" ", "");
+            label5.Text = "chars: " + wordCount.Length;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void toUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            textArea.Text = textArea.Text.ToUpper();
+        }
+
+        private void toLowercaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            textArea.Text = textArea.Text.ToLower();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            ExitFile();
+        }
+
+        private void Form1_ResizeEnd(object sender, EventArgs e)
+        {
+            checkNumberOfTotalLines();
         }
     }
 }

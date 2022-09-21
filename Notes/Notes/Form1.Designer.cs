@@ -38,13 +38,19 @@
             this.exitTool = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toLowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnNew = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -58,9 +64,10 @@
             this.textArea.ForeColor = System.Drawing.Color.White;
             this.textArea.Location = new System.Drawing.Point(117, 43);
             this.textArea.Name = "textArea";
-            this.textArea.Size = new System.Drawing.Size(893, 508);
+            this.textArea.Size = new System.Drawing.Size(893, 498);
             this.textArea.TabIndex = 0;
             this.textArea.Text = "";
+            this.textArea.SelectionChanged += new System.EventHandler(this.textArea_SelectionChanged);
             this.textArea.TextChanged += new System.EventHandler(this.textArea_TextChanged);
             // 
             // menuStrip1
@@ -94,7 +101,7 @@
             // 
             this.newTool.Name = "newTool";
             this.newTool.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newTool.Size = new System.Drawing.Size(201, 22);
+            this.newTool.Size = new System.Drawing.Size(210, 22);
             this.newTool.Text = "New";
             this.newTool.Click += new System.EventHandler(this.newTool_Click);
             // 
@@ -102,15 +109,15 @@
             // 
             this.openTool.Name = "openTool";
             this.openTool.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openTool.Size = new System.Drawing.Size(201, 22);
-            this.openTool.Text = "Open";
+            this.openTool.Size = new System.Drawing.Size(210, 22);
+            this.openTool.Text = "Open...";
             this.openTool.Click += new System.EventHandler(this.openTool_Click);
             // 
             // saveTool
             // 
             this.saveTool.Name = "saveTool";
             this.saveTool.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveTool.Size = new System.Drawing.Size(201, 22);
+            this.saveTool.Size = new System.Drawing.Size(210, 22);
             this.saveTool.Text = "Save";
             this.saveTool.Click += new System.EventHandler(this.saveTool_Click);
             // 
@@ -119,21 +126,21 @@
             this.saveAsTool.Name = "saveAsTool";
             this.saveAsTool.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.saveAsTool.Size = new System.Drawing.Size(201, 22);
-            this.saveAsTool.Text = "Save as";
+            this.saveAsTool.Size = new System.Drawing.Size(210, 22);
+            this.saveAsTool.Text = "Save as...";
             this.saveAsTool.Click += new System.EventHandler(this.saveAsTool_Click);
             // 
             // exitTool
             // 
             this.exitTool.Name = "exitTool";
-            this.exitTool.Size = new System.Drawing.Size(201, 22);
-            this.exitTool.Text = "Exit";
-            this.exitTool.Click += new System.EventHandler(this.exitTool_Click);
+            this.exitTool.Size = new System.Drawing.Size(210, 22);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fontToolStripMenuItem});
+            this.fontToolStripMenuItem,
+            this.toUppercaseToolStripMenuItem,
+            this.toLowercaseToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
@@ -141,10 +148,25 @@
             // 
             // fontToolStripMenuItem
             // 
+            this.fontToolStripMenuItem.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.fontToolStripMenuItem.Name = "fontToolStripMenuItem";
-            this.fontToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.fontToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.fontToolStripMenuItem.Text = "Font";
             this.fontToolStripMenuItem.Click += new System.EventHandler(this.fontToolStripMenuItem_Click);
+            // 
+            // toUppercaseToolStripMenuItem
+            // 
+            this.toUppercaseToolStripMenuItem.Name = "toUppercaseToolStripMenuItem";
+            this.toUppercaseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.toUppercaseToolStripMenuItem.Text = "To Uppercase";
+            this.toUppercaseToolStripMenuItem.Click += new System.EventHandler(this.toUppercaseToolStripMenuItem_Click);
+            // 
+            // toLowercaseToolStripMenuItem
+            // 
+            this.toLowercaseToolStripMenuItem.Name = "toLowercaseToolStripMenuItem";
+            this.toLowercaseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.toLowercaseToolStripMenuItem.Text = "To Lowercase";
+            this.toLowercaseToolStripMenuItem.Click += new System.EventHandler(this.toLowercaseToolStripMenuItem_Click);
             // 
             // btnNew
             // 
@@ -160,7 +182,8 @@
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(88, 47);
             this.btnNew.TabIndex = 2;
-            this.btnNew.Text = "New File";
+            this.btnNew.TabStop = false;
+            this.btnNew.Text = "New";
             this.btnNew.UseVisualStyleBackColor = false;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
@@ -168,15 +191,34 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.btnSave);
-            this.panel1.Controls.Add(this.btnExit);
             this.panel1.Controls.Add(this.btnOpen);
             this.panel1.Controls.Add(this.btnNew);
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(111, 544);
             this.panel1.TabIndex = 3;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(100)))));
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(40)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.button1.ForeColor = System.Drawing.Color.Gainsboro;
+            this.button1.Location = new System.Drawing.Point(12, 177);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 47);
+            this.button1.TabIndex = 7;
+            this.button1.TabStop = false;
+            this.button1.Text = "Save as...";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // button2
             // 
@@ -206,28 +248,10 @@
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(88, 47);
             this.btnSave.TabIndex = 5;
+            this.btnSave.TabStop = false;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExit.BackColor = System.Drawing.Color.Transparent;
-            this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExit.FlatAppearance.BorderSize = 0;
-            this.btnExit.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(100)))));
-            this.btnExit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(40)))));
-            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExit.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnExit.ForeColor = System.Drawing.Color.Gainsboro;
-            this.btnExit.Location = new System.Drawing.Point(12, 479);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(88, 47);
-            this.btnExit.TabIndex = 4;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = false;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // btnOpen
             // 
@@ -243,9 +267,36 @@
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(88, 47);
             this.btnOpen.TabIndex = 3;
-            this.btnOpen.Text = "Open File";
+            this.btnOpen.TabStop = false;
+            this.btnOpen.Text = "Open...";
             this.btnOpen.UseVisualStyleBackColor = false;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label3.Location = new System.Drawing.Point(171, 546);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 17);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "words: 1000";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(120, 546);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 17);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "ln: 100";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // fontDialog1
             // 
@@ -254,12 +305,42 @@
             this.fontDialog1.ShowColor = true;
             this.fontDialog1.Apply += new System.EventHandler(this.fontDialog1_Apply);
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label4.Location = new System.Drawing.Point(334, 546);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(92, 17);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "chars ws: 1000";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label5.Location = new System.Drawing.Point(254, 546);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(74, 17);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "chars: 1000";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(41)))), ((int)(((byte)(50)))));
             this.ClientSize = new System.Drawing.Size(1042, 572);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.textArea);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ForeColor = System.Drawing.Color.Gainsboro;
@@ -267,6 +348,7 @@
             this.MinimumSize = new System.Drawing.Size(350, 350);
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -287,7 +369,6 @@
         private ToolStripMenuItem exitTool;
         private Button btnNew;
         private Panel panel1;
-        private Button btnExit;
         private Button btnOpen;
         private Button btnSave;
         private Button button2;
@@ -295,5 +376,12 @@
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem fontToolStripMenuItem;
         private FontDialog fontDialog1;
+        private Label label1;
+        private Button button1;
+        private Label label3;
+        private Label label4;
+        private Label label5;
+        private ToolStripMenuItem toUppercaseToolStripMenuItem;
+        private ToolStripMenuItem toLowercaseToolStripMenuItem;
     }
 }
