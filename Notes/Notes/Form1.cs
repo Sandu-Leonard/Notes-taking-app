@@ -315,5 +315,11 @@ namespace Notes
             findPanelShow = !findPanelShow;
             DisableFindBox();
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textArea.SelectionStart = 0;
+            findPos = 0;
+        }
     }
 }
