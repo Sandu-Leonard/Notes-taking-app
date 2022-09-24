@@ -1,17 +1,24 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace Notes
 {
     public partial class Form1 : Form
     {
+        CustomMessageBox warningBox = new CustomMessageBox();
+
         private OpenFileDialog openFileDialog;
         private SaveFileDialog saveFileDialog;
         private FontDialog fontDialog;
         private String? currentFileName;
+        public int findPos = 0;
+        private int amountToDropTheTextArea = 22;
+
         private bool saved;
-        CustomMessageBox warningBox = new CustomMessageBox();
+        private bool findPanelShow = false;
+
 
 #pragma warning disable CS8618 
         public Form1()
@@ -142,6 +149,7 @@ namespace Notes
         private void textArea_TextChanged(object sender, EventArgs e)
         {
             button2.BackColor = Color.Green;
+            findPos = 0;
             if (File.Exists(currentFileName))
             {
                 Text = currentFileName + "*";
@@ -215,8 +223,7 @@ namespace Notes
         }
 
         private void CheckNumberOfLettersWithSpaces()
-        {
-            
+        { 
             int wordCount = textArea.Text.Length;
             label4.Text = "chars ws: "  + wordCount.ToString();
         }
@@ -258,6 +265,55 @@ namespace Notes
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             ShowFileDetails();
+        }
+
+        
+        private void findInFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            findPanelShow = !findPanelShow;
+            if (findPanelShow)
+            {
+                panel2.Show();
+                textBox1.Focus();
+                textArea.Location = new Point(textArea.Location.X, textArea.Location.Y + amountToDropTheTextArea);
+                textArea.Size = new Size(textArea.Size.Width, textArea.Size.Height - amountToDropTheTextArea);
+            }
+            else
+            {
+                DisableFindBox();
+            }
+        }
+        private void DisableFindBox()
+        {
+            findPos = 0;
+            textArea.SelectionStart = 0;
+            panel2.Hide();
+            textArea.Location = new Point(textArea.Location.X, textArea.Location.Y - amountToDropTheTextArea);
+            textArea.Size = new Size(textArea.Size.Width, textArea.Size.Height + amountToDropTheTextArea);
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                textArea.SelectionStart = 0;    
+                string s = textBox1.Text;
+                textArea.Focus();
+                findPos = textArea.Find(s, findPos, RichTextBoxFinds.MatchCase);
+                textArea.Select(findPos, s.Length);
+                findPos += 1;
+            }
+            catch
+            {
+                MessageBox.Show("No Occurences Found");
+                findPos = 0;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            findPanelShow = !findPanelShow;
+            DisableFindBox();
         }
     }
 }
