@@ -32,4 +32,8 @@
     <Folder Include="bin\Debug\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="fernandreu.ScintillaNET" Version="4.2.0" />
+  </ItemGroup>
+
 </Project>

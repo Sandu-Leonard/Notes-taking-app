@@ -1,11 +1,43 @@
 {
   "version": 3,
   "targets": {
-    "net6.0-windows7.0": {}
+    "net6.0-windows7.0": {
+      "fernandreu.ScintillaNET/4.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0-windows7.0/ScintillaNET.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/ScintillaNET.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WindowsForms"
+        ]
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "fernandreu.ScintillaNET/4.2.0": {
+      "sha512": "68J5Asevo2rX6ImPgajNSh1ZXGO6DKV56eyOXZsdr6uWmt6RZKCGpk29Cd6SPjk0rqzes4kJxWVegZ0qi/ZQDw==",
+      "type": "package",
+      "path": "fernandreu.scintillanet/4.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "fernandreu.scintillanet.4.2.0.nupkg.sha512",
+        "fernandreu.scintillanet.nuspec",
+        "lib/net471/ScintillaNET.dll",
+        "lib/net471/ScintillaNET.xml",
+        "lib/net6.0-windows7.0/ScintillaNET.dll",
+        "lib/net6.0-windows7.0/ScintillaNET.xml"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0-windows7.0": []
+    "net6.0-windows7.0": [
+      "fernandreu.ScintillaNET >= 4.2.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\r4rko\\.nuget\\packages\\": {}
@@ -45,6 +77,12 @@
     "frameworks": {
       "net6.0-windows7.0": {
         "targetAlias": "net6.0-windows",
+        "dependencies": {
+          "fernandreu.ScintillaNET": {
+            "target": "Package",
+            "version": "[4.2.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

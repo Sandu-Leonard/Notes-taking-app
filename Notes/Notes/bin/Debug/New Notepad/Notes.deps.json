@@ -6,6 +6,14 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
+      "Notes/1.0.0": {
+        "dependencies": {
+          "fernandreu.ScintillaNET": "4.2.0"
+        },
+        "runtime": {
+          "Notes.dll": {}
+        }
+      },
       "fernandreu.ScintillaNET/4.2.0": {
         "runtime": {
           "lib/net6.0-windows7.0/ScintillaNET.dll": {
@@ -17,6 +25,11 @@
     }
   },
   "libraries": {
+    "Notes/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "fernandreu.ScintillaNET/4.2.0": {
       "type": "package",
       "serviceable": true,
